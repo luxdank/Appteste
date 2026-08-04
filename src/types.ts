@@ -45,9 +45,23 @@ export interface Specialist {
   completedProjects: number;
   featuredProjectImg?: string;
   location?: string;
+  distanceKm?: number;
+  lat?: number;
+  lng?: number;
   languages?: string[];
   portfolio?: PortfolioItem[];
   reviews?: ReviewItem[];
+}
+
+export interface ServiceRequestPayload {
+  serviceId: string;
+  serviceName: string;
+  urgency: string;
+  title: string;
+  description: string;
+  budgetRange: string;
+  location?: string;
+  createdAt?: string;
 }
 
 export interface Project {

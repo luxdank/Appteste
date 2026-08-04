@@ -44,8 +44,11 @@ export const SPECIALISTS: Specialist[] = [
     skills: ['Figma', 'UI/UX Design', 'Design System', 'Prototipagem', 'Design de Landing Pages', 'Design Tokens', 'User Research'],
     bio: 'Especialista em criar interfaces modernas de alta conversão para SaaS e E-commerce. Com mais de 6 anos liderando produtos digitais em startups e agências, traduzo regras de negócio complexas em telas limpas, funcionais e apaixonantes.',
     completedProjects: 48,
+    distanceKm: 1.2,
+    lat: -23.5505,
+    lng: -46.6333,
     featuredProjectImg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB0F3IUinMI9YIFAiFVLGsfbw1UARfkRfGBhIy-WX9SZL8TrkPZtuhivdPHMbivM4N2I5RIvwnGV_fNzMANBslAHPjqEjIX7sNfHAYoDSZgxWuurjItpPb2YxIY4aEW0lRII09b8uK8bAiTvJQKcPoIMOxZVGTtpOCvytBiJDzur6Kc46aLd7-bMRSj5QGmEjOCt6lUWXWetKNZauDHBOWUFrkO_StDLb5IoIidmzPA2jTkaG5kIMPSIv6demTNElicBaYaZq4Hr0',
-    location: 'São Paulo, SP',
+    location: 'São Paulo, SP (Jardins - 1.2 km)',
     languages: ['Português (Nativo)', 'Inglês (Avançado)'],
     portfolio: [
       {
@@ -102,7 +105,10 @@ export const SPECIALISTS: Specialist[] = [
     skills: ['React', 'Node.js', 'TypeScript', 'Next.js', 'Tailwind CSS', 'API GraphQL', 'PostgreSQL', 'Docker'],
     bio: 'Desenvolvedor Fullstack focado em aplicações web ultrarrápidas, integrações de pagamento e arquiteturas escaláveis. Forte experiência em React, Node e TypeScript com foco em código limpo.',
     completedProjects: 62,
-    location: 'Rio de Janeiro, RJ',
+    distanceKm: 2.8,
+    lat: -23.5615,
+    lng: -46.6559,
+    location: 'São Paulo, SP (Pinheiros - 2.8 km)',
     languages: ['Português (Nativo)', 'Inglês (Fluente)'],
     portfolio: [
       {
@@ -141,7 +147,10 @@ export const SPECIALISTS: Specialist[] = [
     skills: ['Gemini API', 'Engenharia de Prompt', 'Python', 'Machine Learning', 'RAG', 'LangChain', 'FastAPI'],
     bio: 'Desenvolvo soluções de Inteligência Artificial personalizadas e fluxos automatizados inteligentes para startups e enterprise com garantia de precisão e segurança de dados.',
     completedProjects: 39,
-    location: 'Belo Horizonte, MG',
+    distanceKm: 4.5,
+    lat: -23.5415,
+    lng: -46.6210,
+    location: 'São Paulo, SP (Vila Madalena - 4.5 km)',
     languages: ['Português (Nativo)', 'Inglês (Avançado)'],
     portfolio: [
       {
@@ -180,7 +189,10 @@ export const SPECIALISTS: Specialist[] = [
     skills: ['React Native', 'Flutter', 'Swift', 'Kotlin', 'Firebase'],
     bio: 'Desenvolvimento mobile multiplataforma fluido com performance nativa e publicação nas lojas App Store e Google Play.',
     completedProjects: 31,
-    location: 'Curitiba, PR',
+    distanceKm: 7.2,
+    lat: -23.5800,
+    lng: -46.6800,
+    location: 'São Paulo, SP (Itaim Bibi - 7.2 km)',
     languages: ['Português (Nativo)', 'Inglês (Intermediário)']
   },
   {
@@ -197,7 +209,10 @@ export const SPECIALISTS: Specialist[] = [
     skills: ['After Effects', 'Lottie', 'Identidade Visual', '3D Motion', 'Branding'],
     bio: 'Crio animações marcantes e identidades visuais de alto impacto que encantam os clientes e elevam a percepção de marca.',
     completedProjects: 53,
-    location: 'Florianópolis, SC',
+    distanceKm: 9.8,
+    lat: -23.5200,
+    lng: -46.6400,
+    location: 'São Paulo, SP (Moema - 9.8 km)',
     languages: ['Português (Nativo)', 'Inglês (Fluente)']
   },
   {
@@ -214,7 +229,10 @@ export const SPECIALISTS: Specialist[] = [
     skills: ['Google Cloud', 'Docker', 'Kubernetes', 'Microserviços', 'Security Audit'],
     bio: 'Consultoria de infraestrutura e otimização de performance para sistemas distribuídos e plataformas corporativas.',
     completedProjects: 77,
-    location: 'Brasília, DF',
+    distanceKm: 14.1,
+    lat: -23.6000,
+    lng: -46.7000,
+    location: 'São Paulo, SP (Alphaville - 14.1 km)',
     languages: ['Português (Nativo)', 'Inglês (Fluente)']
   }
 ];

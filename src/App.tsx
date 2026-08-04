@@ -13,12 +13,13 @@ import { RegisterProfessionalView } from './components/RegisterProfessionalView'
 import { SpecialistModal } from './components/SpecialistModal';
 import { ChatModal } from './components/ChatModal';
 
-import { NavigationTab, Specialist, Project } from './types';
+import { NavigationTab, Specialist, Project, ServiceRequestPayload } from './types';
 import { SPECIALISTS } from './data/mockData';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<NavigationTab>('welcome');
   const [selectedServiceId, setSelectedServiceId] = useState<string>('landing');
+  const [lastRequestData, setLastRequestData] = useState<ServiceRequestPayload | null>(null);
   const [specialists, setSpecialists] = useState<Specialist[]>(() => {
     try {
       const saved = localStorage.getItem('nexo_specialists');
@@ -82,7 +83,8 @@ export default function App() {
   };
 
   const handleSubmitRequest = (requestData: any) => {
-    showToast(`Solicitação "${requestData.title}" criada! Buscando especialistas no Radar IA...`);
+    setLastRequestData(requestData);
+    showToast(`Solicitação "${requestData.title}" criada! Filtrando especialistas mais próximos no Radar IA...`);
   };
 
   const handleLoginSuccess = (userRole: 'CLIENT' | 'PROFESSIONAL', userData?: any) => {
@@ -147,6 +149,7 @@ export default function App() {
             onSelectSpecialist={handleSelectSpecialistProfile}
             onOpenChatWith={setChatSpecialist}
             specialists={specialists}
+            lastRequest={lastRequestData}
           />
         )}
 
