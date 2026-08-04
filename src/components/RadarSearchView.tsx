@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { SPECIALISTS } from '../data/mockData';
 import { Specialist, NavigationTab, ServiceRequestPayload } from '../types';
+import { UserLocation } from '../hooks/useGeolocation';
 
 interface RadarSearchViewProps {
   onNavigate: (tab: NavigationTab) => void;
@@ -32,6 +33,8 @@ interface RadarSearchViewProps {
   onOpenChatWith: (specialist: Specialist) => void;
   specialists?: Specialist[];
   lastRequest?: ServiceRequestPayload | null;
+  userLocation?: UserLocation;
+  onRequestGps?: () => void;
 }
 
 const SERVICE_STYLES = [
@@ -49,6 +52,8 @@ export const RadarSearchView: React.FC<RadarSearchViewProps> = ({
   onOpenChatWith,
   specialists: providedSpecialists,
   lastRequest,
+  userLocation,
+  onRequestGps,
 }) => {
   const activeSpecialistsList = providedSpecialists && providedSpecialists.length > 0 ? providedSpecialists : SPECIALISTS;
 
@@ -72,7 +77,9 @@ export const RadarSearchView: React.FC<RadarSearchViewProps> = ({
   const [foundCount, setFoundCount] = useState(3);
 
   const stages = [
-    'Obtendo localização GPS do cliente (São Paulo, SP)...',
+    userLocation?.active
+      ? `GPS Ativo: Lat ${userLocation.lat.toFixed(4)}, Lng ${userLocation.lng.toFixed(4)}...`
+      : 'Obtendo localização GPS do cliente...',
     'Buscando profissionais cadastrados nas proximidades...',
     'Filtrando por compatibilidade de estilo de serviço...',
     'Especialistas mais próximos prontos para receber notificação!'
@@ -143,11 +150,25 @@ export const RadarSearchView: React.FC<RadarSearchViewProps> = ({
       <div className="bg-white border border-[#c8c4d9]/80 rounded-3xl p-6 shadow-sm space-y-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="bg-[#5b3df5]/10 text-[#4212de] text-[11px] font-extrabold uppercase px-3 py-1 rounded-full border border-[#5b3df5]/20 flex items-center gap-1.5">
                 <Navigation className="w-3.5 h-3.5 text-[#5b3df5]" />
                 Geofence GPS & Match Inteligente
               </span>
+              {userLocation?.active ? (
+                <span className="bg-emerald-50 text-emerald-800 text-[11px] font-extrabold px-3 py-1 rounded-full border border-emerald-200 flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  Sinal GPS Conectado ({userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)})
+                </span>
+              ) : (
+                <button
+                  onClick={onRequestGps}
+                  className="bg-amber-50 hover:bg-amber-100 text-amber-900 text-[11px] font-extrabold px-3 py-1 rounded-full border border-amber-200 flex items-center gap-1.5 transition-all"
+                >
+                  <MapPin className="w-3.5 h-3.5 text-amber-600" />
+                  Clique para Ativar GPS de Navegação
+                </button>
+              )}
               {lastRequest && (
                 <span className="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-1 rounded-full">
                   Projeto: {lastRequest.title || lastRequest.serviceName}

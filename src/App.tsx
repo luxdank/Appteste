@@ -15,8 +15,10 @@ import { ChatModal } from './components/ChatModal';
 
 import { NavigationTab, Specialist, Project, ServiceRequestPayload } from './types';
 import { SPECIALISTS } from './data/mockData';
+import { useGeolocation } from './hooks/useGeolocation';
 
 export default function App() {
+  const { userLocation, requestGps } = useGeolocation();
   const [currentTab, setCurrentTab] = useState<NavigationTab>('welcome');
   const [selectedServiceId, setSelectedServiceId] = useState<string>('landing');
   const [lastRequestData, setLastRequestData] = useState<ServiceRequestPayload | null>(null);
@@ -118,6 +120,8 @@ export default function App() {
           currentTab={currentTab}
           onNavigate={setCurrentTab}
           onOpenSearch={() => setCurrentTab('radar')}
+          userLocation={userLocation}
+          onRequestGps={requestGps}
         />
       )}
 
@@ -160,6 +164,8 @@ export default function App() {
             onOpenChatWith={setChatSpecialist}
             specialists={specialists}
             lastRequest={lastRequestData}
+            userLocation={userLocation}
+            onRequestGps={requestGps}
           />
         )}
 
