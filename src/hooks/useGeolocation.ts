@@ -9,19 +9,73 @@ export interface UserLocation {
   error: string | null;
   loading: boolean;
   permissionState: 'prompt' | 'granted' | 'denied' | 'unknown';
+  isCustom?: boolean;
+}
+
+async function reverseGeocode(lat: number, lng: number): Promise<string> {
+  try {
+    const res = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=pt`
+    );
+    if (res.ok) {
+      const data = await res.json();
+      const city = data.city || data.locality || data.principalSubdivision || '';
+      const state = data.principalSubdivisionCode || data.principalSubdivision || '';
+      const country = data.countryName || '';
+      if (city) {
+        const stateFormatted = state.replace('BR-', '');
+        return stateFormatted ? `${city}, ${stateFormatted}` : `${city}, ${country}`;
+      }
+    }
+  } catch (e) {
+    console.warn('BigDataCloud geocode failed:', e);
+  }
+
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10`,
+      { headers: { 'Accept-Language': 'pt-BR,pt;q=0.9' } }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      const addr = data.address || {};
+      const city = addr.city || addr.town || addr.village || addr.municipality || addr.state_district;
+      const state = addr.state || addr.country || '';
+      if (city) {
+        return state ? `${city}, ${state}` : city;
+      }
+    }
+  } catch (e) {
+    console.warn('Nominatim geocode failed:', e);
+  }
+
+  return `Lat: ${lat.toFixed(3)}, Lng: ${lng.toFixed(3)}`;
 }
 
 export function useGeolocation() {
   const [userLocation, setUserLocation] = useState<UserLocation>({
-    lat: -23.5505, // Default São Paulo center
+    lat: -23.5505,
     lng: -46.6333,
     accuracy: 15,
-    city: 'São Paulo, SP',
+    city: 'Carregando localização GPS...',
     active: false,
     error: null,
     loading: true,
     permissionState: 'unknown',
   });
+
+  const setCustomCity = useCallback((cityName: string, customLat?: number, customLng?: number) => {
+    setUserLocation(prev => ({
+      ...prev,
+      city: cityName,
+      lat: customLat ?? prev.lat,
+      lng: customLng ?? prev.lng,
+      active: true,
+      isCustom: true,
+      error: null,
+      loading: false,
+    }));
+  }, []);
 
   const requestGps = useCallback(() => {
     if (!('geolocation' in navigator)) {
@@ -37,17 +91,21 @@ export function useGeolocation() {
     setUserLocation(prev => ({ ...prev, loading: true, error: null }));
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const { latitude, longitude, accuracy } = position.coords;
+        // Fetch real city name via reverse geocoding
+        const detectedCity = await reverseGeocode(latitude, longitude);
+
         setUserLocation({
           lat: latitude,
           lng: longitude,
           accuracy: Math.round(accuracy),
-          city: 'Localização Atual (GPS Ativo)',
+          city: detectedCity,
           active: true,
           error: null,
           loading: false,
           permissionState: 'granted',
+          isCustom: false,
         });
       },
       (err) => {
@@ -56,50 +114,25 @@ export function useGeolocation() {
           ...prev,
           active: false,
           loading: false,
+          city: prev.isCustom ? prev.city : 'Localização não obtida',
           error: err.code === err.PERMISSION_DENIED
-            ? 'Permissão de GPS negada. Ative a localização no seu navegador.'
-            : 'Não foi possível obter a localização GPS em tempo real.',
+            ? 'Permissão de GPS negada. Permita o acesso à localização no navegador.'
+            : 'Não foi possível obter o GPS automático.',
           permissionState: err.code === err.PERMISSION_DENIED ? 'denied' : 'unknown',
         }));
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 5000,
+        timeout: 12000,
+        maximumAge: 3000,
       }
     );
   }, []);
 
   useEffect(() => {
-    // Attempt initial GPS fetch
     requestGps();
-
-    // Listen for continuous updates
-    if ('geolocation' in navigator) {
-      const watchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const { latitude, longitude, accuracy } = position.coords;
-          setUserLocation(prev => ({
-            ...prev,
-            lat: latitude,
-            lng: longitude,
-            accuracy: Math.round(accuracy),
-            city: 'Sinal GPS em Tempo Real',
-            active: true,
-            error: null,
-            loading: false,
-            permissionState: 'granted',
-          }));
-        },
-        () => {},
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-      );
-
-      return () => {
-        navigator.geolocation.clearWatch(watchId);
-      };
-    }
   }, [requestGps]);
 
-  return { userLocation, requestGps };
+  return { userLocation, requestGps, setCustomCity };
 }
+

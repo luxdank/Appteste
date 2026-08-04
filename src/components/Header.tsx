@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Bell, Search, User, ChevronRight, MapPin, Navigation, RefreshCw } from 'lucide-react';
+import { Sparkles, Bell, Search, User, ChevronRight, MapPin, Navigation, RefreshCw, Edit3, Check } from 'lucide-react';
 import { USER_PROFILE } from '../data/mockData';
 import { NavigationTab } from '../types';
 import { UserLocation } from '../hooks/useGeolocation';
@@ -10,6 +10,7 @@ interface HeaderProps {
   onOpenSearch?: () => void;
   userLocation?: UserLocation;
   onRequestGps?: () => void;
+  onSetCustomCity?: (city: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -18,9 +19,13 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSearch,
   userLocation,
   onRequestGps,
+  onSetCustomCity,
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showGpsDetails, setShowGpsDetails] = useState(false);
+  const [isEditingCity, setIsEditingCity] = useState(false);
+  const [customCityInput, setCustomCityInput] = useState('');
+
   const [notifications, setNotifications] = useState([
     {
       id: '1',
@@ -49,6 +54,14 @@ export const Header: React.FC<HeaderProps> = ({
 
   const markAllAsRead = () => {
     setNotifications(notifications.map(n => ({ ...n, read: true })));
+  };
+
+  const handleSaveCustomCity = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (customCityInput.trim() && onSetCustomCity) {
+      onSetCustomCity(customCityInput.trim());
+      setIsEditingCity(false);
+    }
   };
 
   const isRadarTab = currentTab === 'radar';
@@ -115,7 +128,7 @@ export const Header: React.FC<HeaderProps> = ({
                     ? 'bg-white/10 text-white/80 border border-white/20'
                     : 'bg-[#f6f1ff] text-[#4212de] border border-[#5b3df5]/20'
               }`}
-              title="Status do GPS Geofence"
+              title="Status e Cidade do GPS Geofence"
             >
               <span className="relative flex h-2 w-2">
                 {userLocation?.active ? (
@@ -128,14 +141,14 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </span>
               <Navigation className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">
-                {userLocation?.active ? 'GPS Ativo' : 'Ativar GPS'}
+              <span className="max-w-[130px] sm:max-w-[180px] truncate">
+                {userLocation?.city || (userLocation?.active ? 'GPS Ativo' : 'Ativar GPS')}
               </span>
             </button>
 
             {/* GPS Popover details */}
             {showGpsDetails && (
-              <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-[#c8c4d9] p-4 text-[#1c1a25] z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-[#c8c4d9] p-4 text-[#1c1a25] z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                 <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#e5e0ef]">
                   <div className="flex items-center gap-1.5 text-xs font-black text-[#1c1a25]">
                     <MapPin className="w-4 h-4 text-[#5b3df5]" />
@@ -152,7 +165,49 @@ export const Header: React.FC<HeaderProps> = ({
                   </span>
                 </div>
 
-                <div className="space-y-2 text-xs text-[#474556]">
+                <div className="space-y-2.5 text-xs text-[#474556]">
+                  {/* City Display and Edit */}
+                  <div className="bg-[#f6f1ff] p-2.5 rounded-xl border border-[#5b3df5]/20 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#787588]">
+                        Localização Detectada:
+                      </span>
+                      <button
+                        onClick={() => {
+                          setIsEditingCity(!isEditingCity);
+                          setCustomCityInput(userLocation?.city || '');
+                        }}
+                        className="text-[11px] font-bold text-[#5b3df5] hover:underline flex items-center gap-1"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                        {isEditingCity ? 'Cancelar' : 'Alterar'}
+                      </button>
+                    </div>
+
+                    {isEditingCity ? (
+                      <form onSubmit={handleSaveCustomCity} className="flex gap-1.5 pt-1">
+                        <input
+                          type="text"
+                          value={customCityInput}
+                          onChange={(e) => setCustomCityInput(e.target.value)}
+                          placeholder="Digite sua cidade..."
+                          className="flex-1 px-2.5 py-1 text-xs border border-[#5b3df5]/40 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#5b3df5] bg-white text-[#1c1a25]"
+                          autoFocus
+                        />
+                        <button
+                          type="submit"
+                          className="px-2.5 py-1 bg-[#5b3df5] text-white text-xs font-bold rounded-lg hover:bg-[#4212de]"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                        </button>
+                      </form>
+                    ) : (
+                      <p className="font-headline font-extrabold text-sm text-[#4212de]">
+                        {userLocation?.city || 'Buscando cidade...'}
+                      </p>
+                    )}
+                  </div>
+
                   <div className="flex justify-between">
                     <span className="text-[#787588]">Latitude:</span>
                     <span className="font-mono font-bold text-[#1c1a25]">
@@ -174,19 +229,20 @@ export const Header: React.FC<HeaderProps> = ({
                     </div>
                   )}
                   <p className="text-[11px] text-[#787588] pt-1 border-t border-[#e5e0ef]">
-                    O GPS é utilizado para calcular distâncias exatas até os profissionais no Radar IA.
+                    O GPS rastreia especialistas no raio geográfico da sua cidade em tempo real.
                   </p>
                 </div>
 
                 <button
                   onClick={() => {
                     if (onRequestGps) onRequestGps();
+                    setIsEditingCity(false);
                     setShowGpsDetails(false);
                   }}
                   className="w-full mt-3 py-2 bg-[#5b3df5] hover:bg-[#4212de] text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
-                  Atualizar Posição GPS
+                  Redetectar via GPS Automático
                 </button>
               </div>
             )}

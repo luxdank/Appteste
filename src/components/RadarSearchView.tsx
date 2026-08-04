@@ -35,6 +35,7 @@ interface RadarSearchViewProps {
   lastRequest?: ServiceRequestPayload | null;
   userLocation?: UserLocation;
   onRequestGps?: () => void;
+  onSetCustomCity?: (city: string) => void;
 }
 
 const SERVICE_STYLES = [
@@ -158,7 +159,7 @@ export const RadarSearchView: React.FC<RadarSearchViewProps> = ({
               {userLocation?.active ? (
                 <span className="bg-emerald-50 text-emerald-800 text-[11px] font-extrabold px-3 py-1 rounded-full border border-emerald-200 flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Sinal GPS Conectado ({userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)})
+                  {userLocation.city || 'GPS Conectado'} ({userLocation.lat.toFixed(3)}, {userLocation.lng.toFixed(3)})
                 </span>
               ) : (
                 <button
@@ -321,7 +322,7 @@ export const RadarSearchView: React.FC<RadarSearchViewProps> = ({
             <div className="relative z-10 flex items-center justify-between gap-2 bg-black/40 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/10 max-w-fit">
               <span className="w-2.5 h-2.5 rounded-full bg-[#42e09a] animate-ping" />
               <span className="text-xs font-extrabold text-white tracking-wide uppercase">
-                São Paulo, SP • {filteredSpecialists.length} Profissionais em {maxRadiusKm} km
+                {userLocation?.city || 'Sua Localização GPS'} • {filteredSpecialists.length} Profissionais em {maxRadiusKm} km
               </span>
             </div>
 

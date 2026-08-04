@@ -18,7 +18,7 @@ import { SPECIALISTS } from './data/mockData';
 import { useGeolocation } from './hooks/useGeolocation';
 
 export default function App() {
-  const { userLocation, requestGps } = useGeolocation();
+  const { userLocation, requestGps, setCustomCity } = useGeolocation();
   const [currentTab, setCurrentTab] = useState<NavigationTab>('welcome');
   const [selectedServiceId, setSelectedServiceId] = useState<string>('landing');
   const [lastRequestData, setLastRequestData] = useState<ServiceRequestPayload | null>(null);
@@ -122,6 +122,7 @@ export default function App() {
           onOpenSearch={() => setCurrentTab('radar')}
           userLocation={userLocation}
           onRequestGps={requestGps}
+          onSetCustomCity={setCustomCity}
         />
       )}
 
@@ -166,6 +167,7 @@ export default function App() {
             lastRequest={lastRequestData}
             userLocation={userLocation}
             onRequestGps={requestGps}
+            onSetCustomCity={setCustomCity}
           />
         )}
 
