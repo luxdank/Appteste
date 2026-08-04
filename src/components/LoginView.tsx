@@ -52,12 +52,14 @@ export const LoginView: React.FC<LoginViewProps> = ({
   const handleQuickDemoLogin = (demoType: 'client' | 'pro-ui' | 'pro-dev' | 'pro-ai') => {
     if (demoType === 'client') {
       onLoginSuccess('CLIENT', USER_PROFILE);
-    } else if (demoType === 'pro-ui') {
-      onLoginSuccess('PROFESSIONAL', SPECIALISTS[0]);
-    } else if (demoType === 'pro-dev') {
-      onLoginSuccess('PROFESSIONAL', SPECIALISTS[1]);
-    } else if (demoType === 'pro-ai') {
-      onLoginSuccess('PROFESSIONAL', SPECIALISTS[2]);
+    } else {
+      const demoProMap = {
+        'pro-ui': { name: 'Beatriz Silva (Demo UI/UX)', role: 'UI/UX Designer Senior', hourlyRate: 'R$ 130/h', rating: 4.9, avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400' },
+        'pro-dev': { name: 'Ricardo Lima (Demo Dev)', role: 'Fullstack Developer', hourlyRate: 'R$ 160/h', rating: 5.0, avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400' },
+        'pro-ai': { name: 'Camila Fernandes (Demo IA)', role: 'Engenheira de IA', hourlyRate: 'R$ 180/h', rating: 4.95, avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=400' },
+      };
+      const demoPro = (SPECIALISTS && SPECIALISTS.length > 0) ? SPECIALISTS[0] : demoProMap[demoType];
+      onLoginSuccess('PROFESSIONAL', demoPro);
     }
   };
 

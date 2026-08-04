@@ -19,6 +19,8 @@ import {
   ChevronRight,
   Info,
   UserCheck,
+  UserPlus,
+  Briefcase,
   Smartphone
 } from 'lucide-react';
 import { SPECIALISTS } from '../data/mockData';
@@ -559,6 +561,36 @@ export const RadarSearchView: React.FC<RadarSearchViewProps> = ({
             <p className="text-xs text-white/90">
               {stages[activeStep]}
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* EMPTY STATE WHEN NO SPECIALISTS REGISTERED */}
+      {filteredSpecialists.length === 0 && (
+        <div className="bg-white border-2 border-dashed border-[#c8c4d9] rounded-3xl p-8 md:p-12 text-center space-y-4 max-w-xl mx-auto my-6 animate-in fade-in duration-300">
+          <div className="w-16 h-16 bg-[#5b3df5]/10 text-[#5b3df5] rounded-2xl flex items-center justify-center mx-auto">
+            <UserPlus className="w-8 h-8" />
+          </div>
+          <h3 className="font-headline font-extrabold text-xl text-[#1c1a25]">
+            Nenhum especialista cadastrado no momento
+          </h3>
+          <p className="text-xs text-[#474556] leading-relaxed max-w-md mx-auto">
+            Os perfis de teste foram excluídos conforme solicitado. Cadastre seu perfil profissional para ser o primeiro a aparecer no Radar Geofence GPS!
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => onNavigate('register-pro')}
+              className="px-6 py-3 bg-[#5b3df5] hover:bg-[#4212de] text-white font-extrabold text-xs rounded-2xl shadow-md transition-all flex items-center justify-center gap-2"
+            >
+              <Briefcase className="w-4 h-4" />
+              Cadastrar meu Perfil de Profissional
+            </button>
+            <button
+              onClick={() => onNavigate('welcome')}
+              className="px-5 py-3 bg-[#f6f1ff] hover:bg-[#e5e0ef] text-[#4212de] font-bold text-xs rounded-2xl transition-all"
+            >
+              Voltar para Página Inicial
+            </button>
           </div>
         </div>
       )}

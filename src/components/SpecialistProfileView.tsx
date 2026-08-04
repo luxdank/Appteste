@@ -47,6 +47,36 @@ export const SpecialistProfileView: React.FC<SpecialistProfileViewProps> = ({
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
 
+  if (!activeSpecialist) {
+    return (
+      <div className="min-h-screen pt-24 pb-28 px-4 text-center max-w-md mx-auto flex flex-col items-center justify-center animate-in fade-in duration-200">
+        <div className="w-16 h-16 bg-[#5b3df5]/10 text-[#5b3df5] rounded-2xl flex items-center justify-center mb-4">
+          <Briefcase className="w-8 h-8" />
+        </div>
+        <h3 className="font-headline font-extrabold text-xl text-[#1c1a25] mb-2">
+          Nenhum perfil de especialista selecionado
+        </h3>
+        <p className="text-xs text-[#474556] mb-6 leading-relaxed">
+          Os perfis de teste foram removidos. Cadastre-se como especialista para criar seu perfil no NEXO ou consulte a página inicial.
+        </p>
+        <div className="flex flex-col gap-2.5 w-full">
+          <button
+            onClick={() => onNavigate('register-pro')}
+            className="w-full py-3.5 bg-[#5b3df5] hover:bg-[#4212de] text-white font-extrabold rounded-2xl text-xs shadow-md"
+          >
+            Cadastrar meu Perfil de Especialista
+          </button>
+          <button
+            onClick={() => onNavigate('welcome')}
+            className="w-full py-3 bg-[#f6f1ff] text-[#4212de] font-bold rounded-2xl text-xs"
+          >
+            Ir para Página Inicial
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // Estimator state
   const [selectedServiceType, setSelectedServiceType] = useState<string>('Landing Page');
   const [urgencyOption, setUrgencyOption] = useState<'48h' | '5dias' | '10dias'>('5dias');

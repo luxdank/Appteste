@@ -20,12 +20,17 @@ export default function App() {
   const [currentTab, setCurrentTab] = useState<NavigationTab>('welcome');
   const [selectedServiceId, setSelectedServiceId] = useState<string>('landing');
   const [lastRequestData, setLastRequestData] = useState<ServiceRequestPayload | null>(null);
+  const [loginRole, setLoginRole] = useState<'CLIENT' | 'PROFESSIONAL'>('CLIENT');
   const [specialists, setSpecialists] = useState<Specialist[]>(() => {
     try {
       const saved = localStorage.getItem('nexo_specialists');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) {
+          // Filter out old test dummy profiles if present
+          const clean = parsed.filter(s => s && typeof s.id === 'string' && !s.id.startsWith('spec-1') && !s.id.startsWith('spec-2') && !s.id.startsWith('spec-3') && !s.id.startsWith('spec-4') && !s.id.startsWith('spec-5') && !s.id.startsWith('spec-6'));
+          return clean;
+        }
       }
     } catch (e) {
       console.error('Error loading specialists from localStorage:', e);
@@ -103,14 +108,18 @@ export default function App() {
     }
   };
 
+  const showAppShell = currentTab !== 'welcome';
+
   return (
     <div className="min-h-screen bg-[#fcf8ff] text-[#1c1a25] flex flex-col font-body selection:bg-[#5b3df5]/20 relative">
-      {/* Top Header */}
-      <Header
-        currentTab={currentTab}
-        onNavigate={setCurrentTab}
-        onOpenSearch={() => setCurrentTab('radar')}
-      />
+      {/* Top Header - hidden on standalone welcome landing page */}
+      {showAppShell && (
+        <Header
+          currentTab={currentTab}
+          onNavigate={setCurrentTab}
+          onOpenSearch={() => setCurrentTab('radar')}
+        />
+      )}
 
       {/* Main Content Router View */}
       <main className="flex-1 w-full">
@@ -118,6 +127,7 @@ export default function App() {
           <OnboardingView
             onNavigate={setCurrentTab}
             onStartRequest={handleOpenNewRequest}
+            onSelectRole={setLoginRole}
           />
         )}
 
@@ -172,7 +182,7 @@ export default function App() {
 
         {currentTab === 'specialist' && (
           <SpecialistProfileView
-            specialist={selectedSpecialist || specialists[0]}
+            specialist={selectedSpecialist || specialists[0] || null}
             onNavigate={setCurrentTab}
             onSelectSpecialist={setSelectedSpecialist}
             onOpenChatWith={setChatSpecialist}
@@ -185,6 +195,7 @@ export default function App() {
             onNavigate={setCurrentTab}
             onLoginSuccess={handleLoginSuccess}
             onRegisterSpecialist={handleRegisterSpecialist}
+            currentRole={loginRole}
           />
         )}
 
@@ -219,11 +230,13 @@ export default function App() {
       />
 
       {/* Bottom Navigation */}
-      <BottomNav
-        currentTab={currentTab}
-        onNavigate={setCurrentTab}
-        onOpenNewRequest={handleOpenNewRequest}
-      />
+      {showAppShell && (
+        <BottomNav
+          currentTab={currentTab}
+          onNavigate={setCurrentTab}
+          onOpenNewRequest={handleOpenNewRequest}
+        />
+      )}
     </div>
   );
 }

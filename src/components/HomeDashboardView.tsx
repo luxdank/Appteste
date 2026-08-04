@@ -242,62 +242,75 @@ export const HomeDashboardView: React.FC<HomeDashboardViewProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {activeSpecialists.slice(0, 4).map((spec) => (
-            <div
-              key={spec.id}
-              className="bg-white border border-[#c8c4d9]/70 rounded-2xl p-4 flex items-center justify-between hover:border-[#5b3df5] hover:shadow-sm transition-all"
-            >
-              <div
-                onClick={() => onSelectSpecialist(spec)}
-                className="flex items-center gap-3.5 cursor-pointer flex-1"
+          {activeSpecialists.length === 0 ? (
+            <div className="col-span-1 md:col-span-2 bg-white border border-dashed border-[#c8c4d9] rounded-2xl p-6 text-center space-y-3">
+              <p className="text-xs font-bold text-[#1c1a25]">Nenhum especialista cadastrado no momento</p>
+              <p className="text-[11px] text-[#787588]">Seja o primeiro profissional a se cadastrar e oferecer serviços no NEXO!</p>
+              <button
+                onClick={() => onNavigate('register-pro')}
+                className="px-4 py-2.5 bg-[#5b3df5] hover:bg-[#4212de] text-white font-bold text-xs rounded-xl shadow-sm transition-all"
               >
-                <div className="relative">
-                  <img
-                    src={spec.avatarUrl}
-                    alt={spec.name}
-                    className="w-14 h-14 rounded-full object-cover border-2 border-[#5b3df5]/20"
-                  />
-                  {spec.isOnline && (
-                    <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#42e09a] border-2 border-white rounded-full ring-1 ring-emerald-300" />
-                  )}
-                </div>
+                Cadastrar Perfil de Profissional
+              </button>
+            </div>
+          ) : (
+            activeSpecialists.slice(0, 4).map((spec) => (
+              <div
+                key={spec.id}
+                className="bg-white border border-[#c8c4d9]/70 rounded-2xl p-4 flex items-center justify-between hover:border-[#5b3df5] hover:shadow-sm transition-all"
+              >
+                <div
+                  onClick={() => onSelectSpecialist(spec)}
+                  className="flex items-center gap-3.5 cursor-pointer flex-1"
+                >
+                  <div className="relative">
+                    <img
+                      src={spec.avatarUrl}
+                      alt={spec.name}
+                      className="w-14 h-14 rounded-full object-cover border-2 border-[#5b3df5]/20"
+                    />
+                    {spec.isOnline && (
+                      <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#42e09a] border-2 border-white rounded-full ring-1 ring-emerald-300" />
+                    )}
+                  </div>
 
-                <div>
-                  <h5 className="font-headline font-bold text-sm text-[#1c1a25]">
-                    {spec.name}
-                  </h5>
-                  <p className="text-xs text-[#474556]">
-                    {spec.role} • <span className="font-semibold">{spec.level}</span>
-                  </p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#4212de] bg-[#f6f1ff] px-2 py-0.5 rounded-md">
-                      <Star className="w-3 h-3 fill-current" />
-                      {spec.rating}
-                    </span>
-                    <span className="text-[11px] text-[#787588]">
-                      {spec.responseTime} de resposta
-                    </span>
+                  <div>
+                    <h5 className="font-headline font-bold text-sm text-[#1c1a25]">
+                      {spec.name}
+                    </h5>
+                    <p className="text-xs text-[#474556]">
+                      {spec.role} • <span className="font-semibold">{spec.level}</span>
+                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#4212de] bg-[#f6f1ff] px-2 py-0.5 rounded-md">
+                        <Star className="w-3 h-3 fill-current" />
+                        {spec.rating}
+                      </span>
+                      <span className="text-[11px] text-[#787588]">
+                        {spec.responseTime} de resposta
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center gap-2 pl-2 border-l border-[#e5e0ef]">
-                <button
-                  onClick={() => onOpenChatWith(spec)}
-                  className="p-2.5 rounded-xl bg-[#f6f1ff] hover:bg-[#5b3df5] text-[#4212de] hover:text-white transition-all active:scale-90"
-                  title="Conversar"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => onSelectSpecialist(spec)}
-                  className="px-3.5 py-2 rounded-xl bg-[#5b3df5] hover:bg-[#4212de] text-white text-xs font-bold transition-all active:scale-95 shadow-sm"
-                >
-                  Contratar
-                </button>
+                <div className="flex items-center gap-2 pl-2 border-l border-[#e5e0ef]">
+                  <button
+                    onClick={() => onOpenChatWith(spec)}
+                    className="p-2.5 rounded-xl bg-[#f6f1ff] hover:bg-[#5b3df5] text-[#4212de] hover:text-white transition-all active:scale-90"
+                    title="Conversar"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => onSelectSpecialist(spec)}
+                    className="px-3.5 py-2 rounded-xl bg-[#5b3df5] hover:bg-[#4212de] text-white text-xs font-bold transition-all active:scale-95 shadow-sm"
+                  >
+                    Contratar
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
 
