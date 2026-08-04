@@ -1,0 +1,6 @@
+{
+  "name": "NEXO - Especialistas em Minutos",
+  "description": "Plataforma de contratação e conexão inteligente de especialistas e profissionais em minutos com IA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
